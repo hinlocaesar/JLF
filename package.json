@@ -1,0 +1,20 @@
+{
+  "name": "jlf-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Marketing website for Jesus' Little Friends Learning Center, Inc. (JLFLC) - Victorias City & Manapla, Negros Occidental",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "jlf",
+    "jlf lc",
+    "preschool",
+    "daycare",
+    "victorias-city",
+    "manapla",
+    "negros-occidental"
+  ],
+  "license": "UNLICENSED"
+}
