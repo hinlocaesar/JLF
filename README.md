@@ -55,11 +55,36 @@ with a compiled stylesheet.
 ├── index.html              # the entire page (all sections)
 ├── assets/
 │   ├── css/style.css       # design tokens, cards, forms, animations
-│   └── js/main.js          # site behaviour
+│   ├── js/main.js          # site behaviour
+│   └── photos/             # photographs (see below)
 ├── server.js               # zero-dependency static dev server
 ├── package.json
 └── README.md
 ```
+
+## Photographs
+
+`assets/photos/` holds real pictures from the school's public Facebook page, downloaded, resized and
+re-encoded locally (total ~310 KB):
+
+| File | Size | Subject |
+|------|------|---------|
+| `campus-playground.jpg` | 900×507 | Playground, slide, swings, artificial turf |
+| `class-workbook.jpg` | 443×590 | Pupil working in a workbook |
+| `class-guided-help.jpg` | 443×590 | Teacher guiding a pupil one-to-one |
+| `class-teacher-care.jpg` | 443×590 | Teacher encouraging two children |
+| `class-play-baskets.jpg` | 443×590 | Child with colourful sorting baskets |
+| `brand-sticker.jpg` | 720×720 | JLFLC logo sticker ("Victorias City") |
+
+**These must be downloaded, never hot-linked.** Facebook CDN URLs are signed and expire, so linking
+straight to `fbcdn.net` breaks after a few days. Re-download and re-commit any new photo you want to add.
+
+The portrait photos are 443×590 but display in landscape-ish tiles, so each `<img>` carries an inline
+`object-position` tuned to keep the faces in frame. `initPhotos()` in `main.js` fades each image in on
+decode and drops in a neutral panel if a file is ever missing.
+
+**Before publishing, confirm you have permission** to use photos of children on a public website, and
+check whether the school wants identifiable pupils shown. Swap in different frames if not.
 
 ---
 
@@ -141,8 +166,9 @@ Everything factual on the page comes from public information:
 
 **Placeholders to replace with real content:**
 
-- The six "Life at JLFLC" tiles are illustrative gradient tiles. Swap them for real class photos
-  (`<img>` with the class `gal-tile`, or your own markup).
+- The gallery now uses real photographs, but only six were recoverable from the public page. Add more
+  under `assets/photos/` and add another `<figure class="photo-tile">` to the grid. The grid is
+  2 / 3 / 4 columns at mobile / `sm` / `lg`, so add tiles in multiples of 2, 3 or 4 to keep rows even.
 - Age bands are labelled "approx." because exact cut-offs vary. Update the `<p>` under each program title.
 - Exact campus addresses and phone numbers are not published on Facebook, so the page links out to
   Facebook for directions instead of guessing. Add them to the Campus cards when you have them.

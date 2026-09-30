@@ -184,6 +184,63 @@
     update();
   }
 
+  /* ------------------------------------------------------------- photos --- */
+  // Each <img> carries width/height so the grid never shifts, but that reserved
+  // box is blank until the file arrives. Reveal each photo on decode, and drop
+  // in a neutral panel if a file is ever missing.
+  //
+  // A photo only counts as "revealed" once it has actually painted. Images
+  // inside an AOS-animated tile start off-screen, and some browsers report
+  // `complete` / fire `load` before the pixels reach the screen. Painting
+  // early would reveal an empty box, so wait for a rendered frame too.
+  function initPhotos() {
+    var tiles = $$(".photo-tile");
+    if (!tiles.length) return;
+
+    tiles.forEach(function (tile) {
+      var img = tile.querySelector("img");
+      if (!img) return; // the CTA tile has no <img>
+
+      var settled = false;
+
+      function reveal() {
+        if (settled) return;
+        settled = true;
+        img.classList.add("is-loaded");
+      }
+
+      function markFailed() {
+        reveal();
+        if (tile.querySelector(".photo-fallback")) return;
+        var fb = document.createElement("span");
+        fb.className = "photo-fallback";
+        fb.innerHTML = '<i class="fa-regular fa-image"></i>';
+        fb.setAttribute("role", "img");
+        fb.setAttribute("aria-label", "Photo unavailable");
+        tile.insertBefore(fb, tile.firstChild);
+      }
+
+      // The <img> is a child of the figure, so listen on the img itself.
+      img.addEventListener("load", function () {
+        // Two frames: one for decode to be committed, one for the paint.
+        window.requestAnimationFrame(function () {
+          window.requestAnimationFrame(reveal);
+        });
+      });
+      img.addEventListener("error", markFailed);
+
+      if (img.complete) {
+        if (img.naturalWidth > 0) {
+          window.requestAnimationFrame(function () {
+            window.requestAnimationFrame(reveal);
+          });
+        } else {
+          markFailed();
+        }
+      }
+    });
+  }
+
   /* ---------------------------------------------------------------- counters */
   function initCounters() {
     var chips = $$("[data-count]");
@@ -460,6 +517,7 @@
     initCounters();
     initPointerGlow();
     initTilt();
+    initPhotos();
     initEnrollForm();
     initYear();
 
